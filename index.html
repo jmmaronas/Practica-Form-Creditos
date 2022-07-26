@@ -14,7 +14,12 @@
 <body>
     <h1 class="text-center my-5 fw-bold fst-italic text-success">Simulador de Prestamos</h1>
     <div class="container col-md-6">
+        <div class="d-flex justify-content-between w-full my-3">
+            <button class="btn btn-outline-primary col-5" id="btnVerOperaciones">Ver Operaciones</button>
+            <button class="btn btn-outline-success col-5" id="btnVerClientes">Ver Clientes</button>
+        </div>
         <form id="formCliente" action="">
+            <h2 class="fst-italic">Formulario Clientes</h2>
             <div class="d-flex  justify-content-between flex-wrap mb-3">
                 <div class="col-md-5">
                     <label class="form-label" for="inputDni">DNI</label>
@@ -41,12 +46,13 @@
             </div>
             <div class="d-flex  justify-content-between flex-wrap mb-3">
                 <button id="btnSolicitarPrestamo" class="btn btn-success" hidden>Solicitar prestamos</button>
-                <button id="btnConfirmarCliente" class="btn btn-success" hidden>Confirmar</button>
+                <button id="btnConfirmarCliente" class="btn btn-warning" hidden>Confirmar</button>
                 <button id="btnCrearCliente" class="btn btn-primary w-full" hidden>Crear Cliente</button>
-                <button id="btnModificarCliente" class="btn btn-warning" hidden>Modificar</button>
+                <button id="btnModificarCliente" class="btn btn-secondary" hidden>Modificar</button>
             </div>
         </form>
-        <form id="formOperacion" hidden>
+        <form id="formOperacion" hidden> 
+            <h2 class="fst-italic">Formulario Operaciones</h2>           
             <div class="col-md-5">
                 <label for="idUsuario" class="form-label">ID usuario</label>
                 <input type="text" class="form-control" id="idUsuario" readonly>
@@ -81,22 +87,49 @@
             </div>
             <div class="row mx-1">
                 <button type="submit" class="btn btn-primary">Solicitar Credito</button>
+                <button id="btnCancelarSolicitud" class="btn btn-secondary">Cancelar</button>
             </div>
         </form>
-        <table class="table">
-            <thead>
-                <tr class="text-center">
-                    <th scope="col">#</th>
-                    <th scope="col">Cliente</th>
-                    <th scope="col">Monto Inicial</th>
-                    <th scope="col">Montos Cuotas</th>
-                    <th scope="col">Monto Final</th>
-                </tr>
-            </thead>
-            <tbody id="tablaBody">
-
-            </tbody>
-        </table>
+        <div id="tablaOperaciones" hidden>
+            <div class="d-flex justify-content-between">
+                <h2 class="fst-italic">Operaciones</h2>
+                <button class="btn btn-danger" id="btnCerrarOperaciones">Cerrar</button>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr class="text-center">
+                        <th scope="col">#</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Monto Inicial</th>
+                        <th scope="col">Montos Cuotas</th>
+                        <th scope="col">Monto Final</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaBodyOperaciones">
+    
+                </tbody>
+            </table>
+        </div>
+        <div id="tablaClientes" hidden>
+            <div class="d-flex justify-content-between">
+                <h2 class="fst-italic">Clientes</h2>
+                <button class="btn btn-danger" id="btnCerrarClientes">Cerrar</button>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr class="text-center">
+                        <th scope="col">#</th>
+                        <th scope="col">DNI</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Tel</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaBodyClientes">
+    
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
