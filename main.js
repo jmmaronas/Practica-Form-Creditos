@@ -28,7 +28,7 @@ const cuotas = [
 
 const clientes = [
     {
-        id: 28123456,
+        id: '28123456',
         nombre: "juan",
         email: "123@123",
         tel: 456
@@ -37,24 +37,39 @@ const clientes = [
 
 const operaciones = []
 
-const selectCuotas = document.getElementById('selectCuotas')
+const formCliente = document.getElementById('formCliente')
+const formOperacion = document.getElementById('formOperacion')
+const tablaBody = document.getElementById('tablaBody')
+
+
 const inputNombre = document.getElementById('inputNombre')
 const inputDni = document.getElementById('inputDni')
 const inputEmail = document.getElementById('inputEmail')
 const inputTel = document.getElementById('inputTel')
 const btnBuscarCliente = document.getElementById('btnBuscarCliente')
 
-const btnConfirmarCLiente = document.getElementById('btnConfirmarCLiente')
-const btnCrearCLiente = document.getElementById('btnCrearCLiente')
-const btnModificarCLiente = document.getElementById('btnModificarCLiente')
+const btnSolicitarPrestamo = document.getElementById('btnSolicitarPrestamo')
+const btnConfirmarCliente = document.getElementById('btnConfirmarCliente')
+const btnCrearCliente = document.getElementById('btnCrearCliente')
+const btnModificarCliente = document.getElementById('btnModificarCliente')
 
-const solicitudCredito = document.getElementById('solicitudCredito')
+const idUsuario = document.getElementById('idUsuario')
 const inputMontoInicial = document.getElementById('inputMontoInicial')
-const spanCuotas = document.getElementById('spanCuotas')
 const inputMontoFinal = document.getElementById('inputMontoFinal')
 const inputMontoCuota = document.getElementById('inputMontoCuota')
-const formOperacion = document.getElementById('formOperacion')
-const tablaBody = document.getElementById('tablaBody')
+const selectCuotas = document.getElementById('selectCuotas')
+const solicitudCredito = document.getElementById('solicitudCredito')
+const spanCuotas = document.getElementById('spanCuotas')
+
+
+
+function guardarStorage(clave, valor) {
+    localStorage.setItem(clave, JSON.stringify(valor))
+}
+
+function recuperarStorage(clave) {
+    return JSON.parse(localStorage.getItem(clave)) || []
+}
 
 function crearSelectCuotas() {
     for (let cuota of cuotas) {
@@ -74,7 +89,9 @@ function guardarCliente() {
     let nombre = inputNombre.value
     let email = inputEmail.value
     let tel = inputTel.value
-    clientes.push({ id, nombre, email, tel })
+    const indice = clientes.findIndex(e => e.id === id)
+    indice === -1 ? clientes[indice] = { id, nombre, email, tel } : clientes.push({ id, nombre, email, tel })
+    guardarStorage('clientes', clientes)
 }
 
 function capturarOperacion() {
@@ -101,50 +118,86 @@ function mostrarOperaciones() {
     })
 }
 
+function bloquearInputs() {
+    inputNombre.setAttribute("readonly", true)
+    inputEmail.setAttribute("readonly", true)
+    inputTel.setAttribute("readonly", true)
+}
+
+function calcularPrestamos() {
+    let cuotasInput = selectCuotas.value
+    let montoPesos = inputMontoInicial.value
+    let cuota = cuotas.find(e => e.id == cuotasInput)
+    console.log(montoPesos)
+    console.log(cuotasInput)
+    if (montoPesos != 0 && cuotasInput != 0) {
+        inputMontoFinal.value = parseInt(montoPesos * cuota.interes)
+        inputMontoCuota.value = (montoPesos * cuota.interes / cuota.cantidad).toFixed(2)
+        spanCuotas.innerText = `${cuota.cantidad} x`
+    }
+}
+
 crearSelectCuotas()
 
-btnBuscarCliente.addEventListener('click', () => {
+btnBuscarCliente.addEventListener('click', (e) => {
+    e.preventDefault()
     let clienteEncontrado = buscarCliente(inputDni.value)
-    inputNombre.value = clienteEncontrado.nombre
-    inputNombre.setAttribute("readonly", true)
-    inputEmail.value = clienteEncontrado.email
-    inputEmail.setAttribute("readonly", true)
-    inputTel.value = clienteEncontrado.tel
-    inputTel.setAttribute("readonly", true)
+    if (clienteEncontrado !== undefined) {
+        bloquearInputs()
+        inputNombre.value = clienteEncontrado.nombre
+        inputEmail.value = clienteEncontrado.email
+        inputTel.value = clienteEncontrado.tel
+        btnSolicitarPrestamo.removeAttribute("hidden")
+        btnModificarCliente.removeAttribute("hidden")
+        btnCrearCliente.hidden = true
+    } else {
+        btnCrearCliente.removeAttribute("hidden")
+        btnConfirmarCliente.hidden = true
+        btnModificarCliente.hidden = true
+    }
 })
 
-btnCrearCLiente.addEventListener('click', (e)=>{    
-    guardarCliente()
+btnSolicitarPrestamo.addEventListener("click", (e) => {
+    e.preventDefault()
+    formCliente.hidden = true
+    formOperacion.removeAttribute("hidden")
+    idUsuario.value = inputDni.value
 })
-btnConfirmarCLiente.addEventListener('click', ()=>{
+
+btnCrearCliente.addEventListener('click', (e) => {
+    e.preventDefault()
+    guardarCliente()
     formOperacion.removeAttribute("hidden")
 })
-btnModificarCLiente.addEventListener('click', ()=>{
+
+btnConfirmarCliente.addEventListener('click', (e) => {
+    e.preventDefault()
+    guardarCliente()
+    bloquearInputs()
+    btnConfirmarCliente.hidden = true
+    btnSolicitarPrestamo.removeAttribute("hidden")
+})
+
+btnModificarCliente.addEventListener('click', (e) => {
+    e.preventDefault()
     inputNombre.removeAttribute("readonly")
     inputEmail.removeAttribute("readonly")
     inputTel.removeAttribute("readonly")
+    btnModificarCliente.hidden = true
+    btnSolicitarPrestamo.hidden = true
+    btnConfirmarCliente.removeAttribute("hidden")
 })
 
 selectCuotas.addEventListener('change', (e) => {
     console.log(e.target.value)
     console.log(selectCuotas.value)
-    let montoPesos = inputMontoInicial.value
-    let cuota = cuotas.find(e => e.id == selectCuotas.value)
-    if (montoPesos !== 0) {
-        inputMontoFinal.value = parseInt(montoPesos * cuota.interes)
-        inputMontoCuota.value = (montoPesos * cuota.interes / cuota.cantidad).toFixed(2)
-    }
-    spanCuotas.innerText = `${cuota.cantidad} x`
+    calcularPrestamos()
+
 })
 
 
 inputMontoInicial.addEventListener('input', () => {
-    let montoPesos = inputMontoInicial.value
-    let cuota = cuotas.find(e => e.id == selectCuotas.value)
-    if (selectCuotas.value != 0) {
-        inputMontoFinal.value = parseInt(montoPesos * cuota.interes)
-        inputMontoCuota.value = (montoPesos * cuota.interes / cuota.cantidad).toFixed(2)
-    }
+    calcularPrestamos()
 })
 
 formOperacion.addEventListener('submit', e => {

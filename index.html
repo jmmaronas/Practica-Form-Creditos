@@ -12,47 +12,54 @@
 </head>
 
 <body>
+    <h1 class="text-center my-5 fw-bold fst-italic text-success">Simulador de Prestamos</h1>
     <div class="container col-md-6">
-
-        <div class="d-flex  justify-content-between mb-3">
-            <div class="col-5">
-                <label class="form-label" for="inputDni">DNI</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="inputDni">
-                    <span id="btnBuscarCliente" class="input-group-text btn btn-secondary">Buscar</span>
+        <form id="formCliente" action="">
+            <div class="d-flex  justify-content-between mb-3">
+                <div class="col-md-5">
+                    <label class="form-label" for="inputDni">DNI</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="inputDni">
+                        <span id="btnBuscarCliente" class="input-group-text btn btn-secondary">Buscar</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="inputNombre">Apellido y Nombre</label>
+                    <input type="text" class="form-control" id="inputNombre">
                 </div>
             </div>
-            <div class="col-6">
-                <label class="form-label" for="inputNombre">Apellido y Nombre</label>
-                <input type="text" class="form-control" id="inputNombre">
-            </div>
-        </div>
-        <div class="d-flex  justify-content-between mb-3">
-            <div class="col-6">
-                <label for="inputEmail" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp">
-                <div id="emailHelp" class="form-text" hidden>We'll never share your email with anyone else.</div>
-            </div>
-            <div class="col-5">
-                <label for="inputTel" class="form-label">Telefono</label>
-                <input type="text" class="form-control" id="inputTel">
-            </div>
-        </div>
-        <div class="d-flex  justify-content-between mb-3">
-            <button id="btnConfirmarCLiente" class="btn btn-success">Confirmar</button>
-            <button id="btnCrearCLiente" class="btn btn-primary w-full">Crear Cliente</button>
-            <button id="btnModificarCLiente" class="btn btn-warning">Modificar</button>
-        </div>
-        <form id="formOperacion" hidden>
             <div class="d-flex  justify-content-between mb-3">
-                <div class="col-6">
+                <div class="col-md-6">
+                    <label for="inputEmail" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp">
+                    <div id="emailHelp" class="form-text" hidden>We'll never share your email with anyone else.</div>
+                </div>
+                <div class="col-md-5">
+                    <label for="inputTel" class="form-label">Telefono</label>
+                    <input type="text" class="form-control" id="inputTel">
+                </div>
+            </div>
+            <div class="d-flex  justify-content-between mb-3">
+                <button id="btnSolicitarPrestamo" class="btn btn-success" hidden>Solicitar prestamos</button>
+                <button id="btnConfirmarCliente" class="btn btn-success" hidden>Confirmar</button>
+                <button id="btnCrearCliente" class="btn btn-primary w-full" hidden>Crear Cliente</button>
+                <button id="btnModificarCliente" class="btn btn-warning" hidden>Modificar</button>
+            </div>
+        </form>
+        <form id="formOperacion" hidden>
+            <div class="col-md-5">
+                <label for="idUsuario" class="form-label">ID usuario</label>
+                <input type="text" class="form-control" id="idUsuario" readonly>
+            </div>
+            <div class="d-flex  justify-content-between mb-3">
+                <div class="col-md-6">
                     <label for="inputMontoInicial" class="form-label">Monto en Pesos</label>
                     <div class="input-group">
                         <span class="input-group-text">$</span>
-                        <input type="text" class="form-control" id="inputMontoInicial">
+                        <input type="number" class="form-control" id="inputMontoInicial" value="0">
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-md-4">
                     <label for="selectCuotas" class="form-label">Cuotas</label>
                     <select class="form-select" aria-label="Default select example" id="selectCuotas">
                         <option value="0">Seleccione cuotas</option>
@@ -60,14 +67,14 @@
                 </div>
             </div>
             <div class="d-flex  justify-content-between mb-3">
-                <div class="col-5">
+                <div class="col-md-5">
                     <label for="inputMontoFinal" class="form-label">Monto por cuota</label>
                     <div class="input-group">
                         <span id="spanCuotas" class="input-group-text"></span>
                         <input type="number" class="form-control" id="inputMontoCuota" disabled>
                     </div>
                 </div>
-                <div class="col-5">
+                <div class="col-md-5">
                     <label for="inputMontoFinal" class="form-label">Total a pagar</label>
                     <input type="number" class="form-control" id="inputMontoFinal" disabled>
                 </div>
@@ -78,7 +85,7 @@
         </form>
         <table class="table">
             <thead>
-                <tr>
+                <tr class="text-center">
                     <th scope="col">#</th>
                     <th scope="col">Cliente</th>
                     <th scope="col">Monto Inicial</th>
