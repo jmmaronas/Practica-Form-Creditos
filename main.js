@@ -65,7 +65,9 @@ const btnVerOperaciones = document.getElementById('btnVerOperaciones')
 const btnVerClientes = document.getElementById('btnVerClientes')
 const btnCerrarClientes = document.getElementById('btnCerrarClientes')
 const btnCerrarOperaciones = document.getElementById('btnCerrarOperaciones')
-
+const btnCancelarSolicitud = document.getElementById('btnCancelarSolicitud')
+const buscarOperacion=document.getElementById('buscarOperacion')
+const buscarClientes=document.getElementById('buscarClientes')
 
 const idUsuario = document.getElementById('idUsuario')
 const inputMontoInicial = document.getElementById('inputMontoInicial')
@@ -81,6 +83,13 @@ function guardarStorage(clave, valor) {
 
 function recuperarStorage(clave) {
     return JSON.parse(localStorage.getItem(clave)) || []
+}
+
+function uid() {
+    const head = Date.now().toString(36)
+    console.log(head)
+    const tail = Math.random().toString(36).substring(2)
+    return head + tail
 }
 
 function inicio() {
@@ -115,19 +124,20 @@ function guardarCliente() {
 
 function capturarOperacion() {
     let operacionesStorage = recuperarStorage('operaciones')
+    let id=uid()
     let dni = inputDni.value
     let montoInicial = inputMontoInicial.value
     let cuota = cuotas.find(e => e.id == selectCuotas.value).cantidad
     let montoFinal = inputMontoFinal.value
-    const operacionNueva = { dni, montoInicial, cuota, montoFinal }
+    const operacionNueva = { id, dni, montoInicial, cuota, montoFinal }
     operacionesStorage.unshift(operacionNueva)
     guardarStorage('operaciones', operacionesStorage)
+    mostrarOperaciones(operacionesStorage)
 }
 
-function mostrarOperaciones() {
-    let operacionesStorage = recuperarStorage('operaciones')
+function mostrarOperaciones(operaciones) {    
     tablaBodyOperaciones.innerHTML = ""
-    operacionesStorage.forEach((operacion, indice) => {
+    operaciones.forEach((operacion, indice) => {
         tablaBodyOperaciones.innerHTML += `
         <tr class="text-center">
             <th scope="row">${indice + 1}</th>
@@ -140,14 +150,13 @@ function mostrarOperaciones() {
     })
 }
 
-function mostrarClientes() {
-    let clientesStorage = recuperarStorage('clientes')
+function mostrarClientes(clientes) {
     tablaBodyClientes.innerHTML = ""
-    clientesStorage.forEach((cliente, indice) => {
+    clientes.forEach((cliente, indice) => {
         tablaBodyClientes.innerHTML += `
         <tr class="text-center">
             <th scope="row">${indice + 1}</th>
-            <td>${cliente.dni}</td>
+            <td>${cliente.id}</td>
             <td>${cliente.nombre}</td>
             <td>${cliente.email}</td>
             <td>${cliente.tel}</td>
@@ -180,7 +189,6 @@ function calcularPrestamos() {
 
 inicio()
 crearSelectCuotas()
-mostrarOperaciones()
 
 btnBuscarCliente.addEventListener('click', (e) => {
     e.preventDefault()
@@ -204,8 +212,7 @@ btnBuscarCliente.addEventListener('click', (e) => {
 })
 
 btnSolicitarPrestamo.addEventListener("click", (e) => {
-    e.preventDefault()
-    formCliente.hidden = true
+    e.preventDefault()    
     formOperacion.removeAttribute("hidden")
     idUsuario.value = inputDni.value
 })
@@ -213,13 +220,13 @@ btnSolicitarPrestamo.addEventListener("click", (e) => {
 btnCrearCliente.addEventListener('click', (e) => {
     e.preventDefault()
     guardarCliente()
+    bloquearInputs()
     btnCrearCliente.hidden = true
     btnSolicitarPrestamo.removeAttribute("hidden")
 })
 
 btnConfirmarCliente.addEventListener('click', (e) => {
-    e.preventDefault()
-    guardarCliente()
+    e.preventDefault()    
     bloquearInputs()
     btnConfirmarCliente.hidden = true
     btnSolicitarPrestamo.removeAttribute("hidden")
@@ -227,9 +234,7 @@ btnConfirmarCliente.addEventListener('click', (e) => {
 
 btnModificarCliente.addEventListener('click', (e) => {
     e.preventDefault()
-    inputNombre.removeAttribute("readonly")
-    inputEmail.removeAttribute("readonly")
-    inputTel.removeAttribute("readonly")
+    habilitarInputs()
     btnModificarCliente.hidden = true
     btnSolicitarPrestamo.hidden = true
     btnConfirmarCliente.removeAttribute("hidden")
@@ -246,17 +251,20 @@ inputMontoInicial.addEventListener('input', () => {
 formOperacion.addEventListener('submit', e => {
     e.preventDefault()
     capturarOperacion()
-    mostrarOperaciones()
+    mostrarOperaciones(recuperarStorage('operaciones'))
+    e.target.reset()    
 })
 
 btnVerClientes.addEventListener('click', () => {
     tablaClientes.removeAttribute('hidden')
     tablaOperaciones.setAttribute('hidden', true)
+    mostrarClientes(recuperarStorage('clientes'))
 })
 
 btnVerOperaciones.addEventListener('click', () => {
     tablaOperaciones.removeAttribute('hidden')
     tablaClientes.setAttribute('hidden', true)
+    mostrarOperaciones(recuperarStorage('operaciones'))
 })
 
 btnCerrarClientes.addEventListener('click', () => {
@@ -265,4 +273,20 @@ btnCerrarClientes.addEventListener('click', () => {
 
 btnCerrarOperaciones.addEventListener('click', () => {
     tablaOperaciones.setAttribute('hidden', true)
+})
+
+btnCancelarSolicitud.addEventListener('click', ()=>{
+    formCliente.reset()
+    habilitarInputs()    
+    formOperacion.hidden=true
+})
+
+buscarClientes.addEventListener('input', (e)=>{
+    const result=recuperarStorage('clientes').filter(cliente=> (cliente.nombre.toUpperCase().includes(e.target.value.toUpperCase())) || (cliente.id.includes(e.target.value)))   
+    mostrarClientes(result)
+})
+
+buscarOperacion.addEventListener('input', (e)=>{
+    const result=recuperarStorage('operaciones').filter(operacion=> operacion.dni.includes(e.target.value))  
+    mostrarOperaciones(result)
 })

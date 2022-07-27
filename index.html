@@ -87,12 +87,13 @@
             </div>
             <div class="row mx-1">
                 <button type="submit" class="btn btn-primary">Solicitar Credito</button>
-                <button id="btnCancelarSolicitud" class="btn btn-secondary">Cancelar</button>
+                <button id="btnCancelarSolicitud" class="btn btn-secondary my-2">Cancelar</button>
             </div>
         </form>
         <div id="tablaOperaciones" hidden>
             <div class="d-flex justify-content-between">
                 <h2 class="fst-italic">Operaciones</h2>
+                <input class="border rounded col-5" type="text" id="buscarOperacion" placeholder="Buscar..">
                 <button class="btn btn-danger" id="btnCerrarOperaciones">Cerrar</button>
             </div>
             <table class="table">
@@ -113,6 +114,7 @@
         <div id="tablaClientes" hidden>
             <div class="d-flex justify-content-between">
                 <h2 class="fst-italic">Clientes</h2>
+                <input class="border rounded col-5" type="text" id="buscarClientes" placeholder="Buscar..">
                 <button class="btn btn-danger" id="btnCerrarClientes">Cerrar</button>
             </div>
             <table class="table">
