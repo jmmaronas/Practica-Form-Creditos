@@ -1,49 +1,3 @@
-const cuotas = [
-    {
-        id: 1,
-        cantidad: 3,
-        interes: 1.1
-    },
-    {
-        id: 2,
-        cantidad: 6,
-        interes: 1.15
-    },
-    {
-        id: 3,
-        cantidad: 9,
-        interes: 1.20
-    },
-    {
-        id: 4,
-        cantidad: 12,
-        interes: 1.40
-    },
-    {
-        id: 5,
-        cantidad: 24,
-        interes: 1.80
-    }
-]
-
-const clientes = [
-    {
-        id: '28123456',
-        nombre: "juan",
-        email: "123@123",
-        tel: 456
-    }
-]
-
-const operaciones = [
-    {
-        dni: "28123456",
-        montoInicial: 5000,
-        cuota: 3,
-        montoFinal: 5500
-    }
-]
-
 const formCliente = document.getElementById('formCliente')
 const formOperacion = document.getElementById('formOperacion')
 const tablaOperaciones = document.getElementById('tablaOperaciones')
@@ -105,36 +59,6 @@ function crearSelectCuotas() {
     }
 }
 
-function buscarCliente(id) {
-    let clientesStorage = recuperarStorage('clientes')
-    let clienteEncontrado = clientesStorage.find(e => e.id == id)
-    return clienteEncontrado
-}
-
-function guardarCliente() {
-    let clientesStorage = recuperarStorage('clientes')
-    let id = inputDni.value
-    let nombre = inputNombre.value
-    let email = inputEmail.value
-    let tel = inputTel.value
-    const indice = clientesStorage.findIndex(e => e.id === id)
-    indice !== -1 ? clientesStorage[indice] = { id, nombre, email, tel } : clientesStorage.push({ id, nombre, email, tel })
-    guardarStorage('clientes', clientesStorage)
-}
-
-function capturarOperacion() {
-    let operacionesStorage = recuperarStorage('operaciones')
-    let id=uid()
-    let dni = inputDni.value
-    let montoInicial = inputMontoInicial.value
-    let cuota = cuotas.find(e => e.id == selectCuotas.value).cantidad
-    let montoFinal = inputMontoFinal.value
-    const operacionNueva = { id, dni, montoInicial, cuota, montoFinal }
-    operacionesStorage.unshift(operacionNueva)
-    guardarStorage('operaciones', operacionesStorage)
-    mostrarOperaciones(operacionesStorage)
-}
-
 function mostrarOperaciones(operaciones) {    
     tablaBodyOperaciones.innerHTML = ""
     operaciones.forEach((operacion, indice) => {
@@ -164,6 +88,37 @@ function mostrarClientes(clientes) {
         `
     })
 }
+
+function buscarCliente(id) {
+    let clientesStorage = recuperarStorage('clientes')
+    let clienteEncontrado = clientesStorage.find(e => e.id == id)
+    return clienteEncontrado
+}
+
+function guardarCliente() {
+    let clientesStorage = recuperarStorage('clientes')
+    let id = inputDni.value.trim()
+    let nombre = inputNombre.value
+    let email = inputEmail.value
+    let tel = inputTel.value
+    const indice = clientesStorage.findIndex(e => e.id === id)
+    indice !== -1 ? clientesStorage[indice] = { id, nombre, email, tel } : clientesStorage.push({ id, nombre, email, tel })
+    guardarStorage('clientes', clientesStorage)
+}
+
+function capturarOperacion() {
+    let operacionesStorage = recuperarStorage('operaciones')
+    let id=uid()
+    let dni = inputDni.value
+    let montoInicial = inputMontoInicial.value
+    let cuota = cuotas.find(e => e.id == selectCuotas.value).cantidad
+    let montoFinal = inputMontoFinal.value
+    const operacionNueva = { id, dni, montoInicial, cuota, montoFinal }
+    operacionesStorage.unshift(operacionNueva)
+    guardarStorage('operaciones', operacionesStorage)
+    mostrarOperaciones(operacionesStorage)
+}
+
 function bloquearInputs() {
     inputNombre.setAttribute("readonly", true)
     inputEmail.setAttribute("readonly", true)
@@ -190,9 +145,22 @@ function calcularPrestamos() {
 inicio()
 crearSelectCuotas()
 
+// botones  mostrar 
+btnVerClientes.addEventListener('click', () => {
+    tablaClientes.removeAttribute('hidden')
+    tablaOperaciones.setAttribute('hidden', true)
+    mostrarClientes(recuperarStorage('clientes'))
+})
+
+btnVerOperaciones.addEventListener('click', () => {
+    tablaOperaciones.removeAttribute('hidden')
+    tablaClientes.setAttribute('hidden', true)
+    mostrarOperaciones(recuperarStorage('operaciones'))
+})
+
 btnBuscarCliente.addEventListener('click', (e) => {
     e.preventDefault()
-    let clienteEncontrado = buscarCliente(inputDni.value)
+    let clienteEncontrado = buscarCliente(inputDni.value.trim())
     if (clienteEncontrado !== undefined) {
         bloquearInputs()
         inputNombre.value = clienteEncontrado.nombre
@@ -239,7 +207,7 @@ btnModificarCliente.addEventListener('click', (e) => {
     btnSolicitarPrestamo.hidden = true
     btnConfirmarCliente.removeAttribute("hidden")
 })
-
+//inputs del prestamo
 selectCuotas.addEventListener('change', (e) => {
     calcularPrestamos()
 })
@@ -255,18 +223,7 @@ formOperacion.addEventListener('submit', e => {
     e.target.reset()    
 })
 
-btnVerClientes.addEventListener('click', () => {
-    tablaClientes.removeAttribute('hidden')
-    tablaOperaciones.setAttribute('hidden', true)
-    mostrarClientes(recuperarStorage('clientes'))
-})
-
-btnVerOperaciones.addEventListener('click', () => {
-    tablaOperaciones.removeAttribute('hidden')
-    tablaClientes.setAttribute('hidden', true)
-    mostrarOperaciones(recuperarStorage('operaciones'))
-})
-
+// botones cerrar
 btnCerrarClientes.addEventListener('click', () => {
     tablaClientes.setAttribute('hidden', true)
 })
